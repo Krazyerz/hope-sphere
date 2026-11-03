@@ -1,0 +1,67 @@
+:root {
+  --night: #1e2d45; --night2: #263954; --ink: #1c2742; --cream: #f6eedb; --cream2: #efe3c8;
+  --amber: #e9b872; --sea: #6fa8c7; --land: #9cc08a; --coral: #d98a7a; --muted: #a9b8cc;
+}
+* { box-sizing: border-box; }
+html { min-height: 100%; background: var(--night); }
+body {
+  margin: 0; min-height: 100vh; color: var(--cream);
+  font: 16px/1.6 ui-rounded, "Trebuchet MS", "Segoe UI", system-ui, sans-serif;
+  background:
+    radial-gradient(circle at 12% 18%, rgba(246,238,219,.55) 0 1.5px, transparent 2px),
+    radial-gradient(circle at 82% 12%, rgba(246,238,219,.45) 0 1.5px, transparent 2px),
+    radial-gradient(circle at 70% 70%, rgba(246,238,219,.35) 0 1.5px, transparent 2px),
+    radial-gradient(circle at 25% 80%, rgba(246,238,219,.4) 0 1.5px, transparent 2px),
+    linear-gradient(var(--night), var(--night2));
+  padding: env(safe-area-inset-top, 0) 20px env(safe-area-inset-bottom, 0);
+}
+main { max-width: 640px; margin: 0 auto; padding: 26px 0 48px; }
+header { text-align: center; }
+canvas { width: 260px; height: 260px; display: block; margin: 0 auto; }
+h1 { font: 700 36px/1.1 Georgia, "Times New Roman", serif; letter-spacing: .01em; margin: 0 0 6px; }
+.tag { color: var(--muted); margin: 0 auto 24px; max-width: 440px; }
+
+.tabs { display: flex; gap: 8px; width: fit-content; margin: 0 auto 22px; }
+.tabs button {
+  cursor: pointer; font: 700 15px inherit; font-family: inherit; color: var(--cream); background: transparent;
+  border: 3px solid var(--cream); border-radius: 999px; padding: 7px 20px; transition: .2s;
+}
+.tabs button[aria-selected="true"] { background: var(--amber); color: var(--ink); border-color: var(--ink); box-shadow: 3px 3px 0 var(--ink); }
+
+.card {
+  background: var(--cream); color: var(--ink); border: 3px solid var(--ink); border-radius: 22px;
+  padding: 24px; box-shadow: 6px 6px 0 var(--ink);
+}
+section[hidden] { display: none; }
+.grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
+@media (max-width: 480px) { .grid { grid-template-columns: 1fr; } }
+label { display: block; font-size: 13px; font-weight: 700; margin: 0 0 5px 3px; letter-spacing: .03em; }
+input, textarea {
+  width: 100%; background: #fffaf0; border: 3px solid var(--ink); border-radius: 14px;
+  color: var(--ink); font: inherit; padding: 10px 14px; transition: box-shadow .2s;
+}
+textarea { font-family: Georgia, serif; font-size: 17px; min-height: 170px; resize: vertical; }
+input:focus, textarea:focus { outline: none; box-shadow: 3px 3px 0 var(--sea); }
+.row { display: flex; justify-content: space-between; align-items: center; margin-top: 14px; gap: 12px; }
+.count { font-size: 14px; font-weight: 700; opacity: .7; }
+.count.over { color: #b4472f; opacity: 1; }
+.btn {
+  cursor: pointer; border: 3px solid var(--ink); border-radius: 999px; padding: 9px 26px;
+  font: 700 15px inherit; font-family: inherit; background: var(--amber); color: var(--ink);
+  box-shadow: 4px 4px 0 var(--ink); transition: transform .1s, box-shadow .1s, opacity .2s;
+}
+.btn:hover:not(:disabled) { transform: translate(-1px,-1px); box-shadow: 5px 5px 0 var(--ink); }
+.btn:active:not(:disabled) { transform: translate(3px,3px); box-shadow: 1px 1px 0 var(--ink); }
+.btn:disabled { opacity: .45; cursor: default; }
+.tabs button:focus-visible, .btn:focus-visible { outline: 3px solid var(--sea); outline-offset: 3px; }
+.status { min-height: 26px; margin-top: 16px; text-align: center; color: var(--amber); font: italic 17px Georgia, serif; }
+
+.letter { background: var(--cream2); padding: 28px 30px 22px; transform: rotate(-.6deg); animation: land .8s cubic-bezier(.2,.8,.2,1); position: relative; }
+.letter::before { content: ""; position: absolute; top: -3px; left: 24px; width: 54px; height: 16px; background: var(--coral); border: 3px solid var(--ink); border-radius: 4px; transform: translateY(-50%) rotate(-3deg); }
+.letter p { margin: 0 0 18px; font: 19px/1.7 Georgia, serif; white-space: pre-wrap; }
+.letter footer { font: italic 15px Georgia, serif; text-align: right; opacity: .8; }
+.empty { text-align: center; padding: 34px 0; font: italic 18px Georgia, serif; }
+.actions { text-align: center; margin-top: 26px; }
+@keyframes land { from { opacity: 0; transform: translateY(24px) rotate(2deg); } to { opacity: 1; transform: rotate(-.6deg); } }
+small.note { display: block; text-align: center; margin-top: 38px; color: var(--muted); font-size: 12.5px; }
+@media (prefers-reduced-motion: reduce) { .letter { animation: none; } }

@@ -1,15 +1,50 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Welcome champ,</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="color-scheme" content="dark">
+<title>hope-sphere</title>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!--Placeholde for an animation-->
-    <p>"Spinning globe thingy"</p>
-    
-    <input type="text" placeholder="Give people some hope">
-    <button>Send!</button>
+<main>
+  <header>
+    <canvas id="globe" aria-hidden="true"></canvas>
+    <h1>hope-sphere</h1>
+    <p class="tag">Write a few kind words to someone you will never meet. Open a letter someone else sent.</p>
+  </header>
+
+  <div class="tabs" role="tablist">
+    <button role="tab" id="tab-write" aria-selected="true" aria-controls="write">Write a letter</button>
+    <button role="tab" id="tab-read" aria-selected="false" aria-controls="read">Open a letter</button>
+  </div>
+
+  <section id="write" role="tabpanel" aria-labelledby="tab-write" class="card">
+    <div class="grid">
+      <div><label for="name">Your name (optional)</label>
+        <input id="name" maxlength="30" placeholder="Anonymous" autocomplete="off"></div>
+      <div><label for="country">Your country</label>
+        <input id="country" list="countries" maxlength="56" placeholder="Start typing..." autocomplete="off"></div>
+    </div>
+    <datalist id="countries"></datalist>
+    <label for="text">Your letter</label>
+    <textarea id="text" placeholder="Give people some hope..."></textarea>
+    <div class="row">
+      <span class="count" id="count" aria-live="polite">0 / 80 words</span>
+      <button class="btn" id="send" disabled>Send</button>
+    </div>
+    <div class="status" id="sendStatus" role="status" style="color:#8a5a1f"></div>
+  </section>
+
+  <section id="read" role="tabpanel" aria-labelledby="tab-read" hidden>
+    <div id="letterBox" class="card"><div class="empty">A letter is waiting for you somewhere.</div></div>
+    <div class="actions"><button class="btn" id="open">Open a letter</button></div>
+  </section>
+
+  <small class="note">Offline mockup: letters are stored in this browser only.</small>
+</main>
+
+<script src="script.js" defer></script>
 </body>
 </html>
