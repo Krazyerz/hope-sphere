@@ -28,4 +28,4 @@ function fmtDur(ms) {
   const s = Math.max(0, Math.round(ms / 1000));
   return s >= 60 ? Math.floor(s / 60) + "m " + String(s % 60).padStart(2, "0") + "s" : s + "s";
 }
-const fmtDate = iso => new Date(iso).toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" }).toUpperCase();
+const fmtDate = iso => new Date(iso).toLocaleDateString(document.documentElement.lang === "ms" ? "ms-MY" : "en-GB", { day: "2-digit", month: "short", year: "numeric" }).toUpperCase();

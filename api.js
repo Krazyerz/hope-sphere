@@ -53,9 +53,9 @@ const api = {
   async sendLetter({ name, country, text, stamp }) {
     await delay(900);                                   // simulated network
     const n = wordCount(text);
-    if (n < 1 || n > MAX_WORDS) throw new Error("Letters need 1 to " + MAX_WORDS + " words.");
+    if (n < 1 || n > MAX_WORDS) throw Object.assign(new Error("Letters need 1 to " + MAX_WORDS + " words."), { code: "err_words" });
     country = country.trim().slice(0, MAX_COUNTRY);
-    if (!/^[\p{L} .'\-]*$/u.test(country)) throw new Error("Please enter a valid country name.");
+    if (!/^[\p{L} .'\-]*$/u.test(country)) throw Object.assign(new Error("Please enter a valid country name."), { code: "err_country" });
     const letter = {
       id: "u" + Date.now().toString(36), name: name.trim().slice(0, MAX_NAME) || "Anonymous",
       country: country || "somewhere on Earth", text: text.trim(),
@@ -85,7 +85,7 @@ const api = {
   },
   async readLetter(mailId) {
     const inbox = store.get("inbox", []), m = inbox.find(x => x.id === mailId);
-    if (!m || Date.now() < m.arriveAt) throw new Error("This letter has not arrived yet.");
+    if (!m || Date.now() < m.arriveAt) throw Object.assign(new Error("This letter has not arrived yet."), { code: "err_early" });
     m.read = true; store.set("inbox", inbox);
     return SEED.find(l => l.id === m.letterId);
   }

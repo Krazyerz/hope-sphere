@@ -5,7 +5,7 @@
 const globe = (() => {
   const cv = $("globe"), ctx = cv.getContext("2d"), S = 260, dpr = Math.min(devicePixelRatio || 1, 2);
   cv.width = cv.height = S * dpr; ctx.scale(dpr, dpr);
-  const slow = matchMedia("(prefers-reduced-motion: reduce)").matches ? .2 : 1;
+  let slow = 1, animated = true, fx = true, acc = 0, lastMs = 0;
   const INK = "#1c2742", TILT = -.4, cT = Math.cos(TILT), sT = Math.sin(TILT);
   const land = [
     [[-168,66],[-140,70],[-95,72],[-80,63],[-62,58],[-55,48],[-70,43],[-76,35],[-81,25],[-97,26],[-97,18],[-87,21],[-83,10],[-78,8],[-92,14],[-105,20],[-115,30],[-124,40],[-125,49],[-135,58],[-165,60]],
@@ -61,7 +61,7 @@ const globe = (() => {
     flights.forEach(f => {
       const u = (ms - f.t0) / f.dur;
       if (u >= 1) { f.dead = true; return; }
-      if (u >= 0) out.push({ A: f.A, B: f.B, u, size: f.ambient ? 6 : 10, al: f.ambient ? .5 : 1, trail: true });
+      if (u >= 0) out.push({ A: f.A, B: f.B, u, size: f.ambient ? 6 : 10, al: f.ambient ? .5 : 1, trail: fx });
     });
     slowFn().forEach(m => out.push({ A: unit(m.from), B: unit(m.to), u: Math.min(.98, Math.max(0, m.u)), size: 8, al: .95, trail: false }));
     return out;
@@ -87,9 +87,10 @@ const globe = (() => {
     }
   }
   function draw(ms) {
-    const rot = ms / 1000 * slow * .3, off = rot / (2 * Math.PI); lastRot = rot;
+    const dt = Math.min(.1, Math.max(0, (ms - lastMs) / 1000)); lastMs = ms; if (animated) acc += dt * slow;
+    const rot = acc * .3, off = rot / (2 * Math.PI); lastRot = rot;
     ctx.clearRect(0, 0, S, S);
-    const its = items(ms);
+    const its = animated ? items(ms) : [];
     pass(false, its, rot);
     for (let n = 0; n < idx.length; n++) {
       const k = idx[n];
@@ -106,24 +107,25 @@ const globe = (() => {
     ctx.lineWidth = 5; ctx.strokeStyle = INK; ctx.beginPath(); ctx.arc(c, c, R, 0, 6.283); ctx.stroke();
     ctx.lineWidth = 3.5; ctx.strokeStyle = "rgba(255,255,255,.7)"; ctx.lineCap = "round";
     ctx.beginPath(); ctx.arc(c, c, R * .8, Math.PI * 1.08, Math.PI * 1.3); ctx.stroke();
-    dots(rot, ms);
+    if (fx) dots(rot, ms);
     pass(true, its, rot);
     bursts = bursts.filter(b => (b.t += .02) < 1);
-    bursts.forEach(b => { const p = place(b.p, 1, rot); if (p.z < 0) return; ctx.strokeStyle = "rgba(233,184,114," + (1 - b.t) + ")"; ctx.lineWidth = 3; ctx.beginPath(); ctx.arc(p.x, p.y, 4 + b.t * 24, 0, 6.283); ctx.stroke(); });
+    bursts.forEach(b => { const p = place(b.p, 1, rot); if (p.z < 0 || !fx) return; ctx.strokeStyle = "rgba(233,184,114," + (1 - b.t) + ")"; ctx.lineWidth = 3; ctx.beginPath(); ctx.arc(p.x, p.y, 4 + b.t * 24, 0, 6.283); ctx.stroke(); });
     rings = rings.filter(r => (r.t += .012) < 1);
-    rings.forEach(r => { ctx.strokeStyle = "rgba(233,184,114," + (1 - r.t) + ")"; ctx.lineWidth = 3; ctx.beginPath(); ctx.arc(c, c, R * (1.08 + r.t * .4), 0, 6.283); ctx.stroke(); });
+    rings.forEach(r => { if (!fx) return; ctx.strokeStyle = "rgba(233,184,114," + (1 - r.t) + ")"; ctx.lineWidth = 3; ctx.beginPath(); ctx.arc(c, c, R * (1.08 + r.t * .4), 0, 6.283); ctx.stroke(); });
     for (let i = flights.length - 1; i >= 0; i--) if (flights[i].dead) {
       const f = flights.splice(i, 1)[0];
       if (!f.ambient) bursts.push({ p: f.B, t: 0 });
       if (f.done) f.done();
     }
-    requestAnimationFrame(draw);
+    animated ? requestAnimationFrame(draw) : setTimeout(() => requestAnimationFrame(draw), 800);
   }
   requestAnimationFrame(draw);
   return {
-    pulse() { rings.push({ t: 0 }); },
-    fly(from, to, o = {}) { flights.push({ A: unit(from), B: unit(to), t0: performance.now(), dur: o.dur || 5000, ambient: !!o.ambient, done: o.done }); },
+    pulse() { if (animated) rings.push({ t: 0 }); },
+    fly(from, to, o = {}) { if (!animated) { if (o.done) setTimeout(o.done, 400); return; } flights.push({ A: unit(from), B: unit(to), t0: performance.now(), dur: o.dur || 5000, ambient: !!o.ambient, done: o.done }); },
     center() { return [Math.asin(sT) * 180 / Math.PI, -lastRot * 180 / Math.PI]; },   // the spot facing the viewer
-    setSlow(fn) { slowFn = fn; }, setGlow(o) { glowObj = o; }
+    setSlow(fn) { slowFn = fn; }, setGlow(o) { glowObj = o; },
+    setOpts(o) { animated = o.animated; fx = o.fx; slow = o.calm ? .2 : 1; if (!animated) { flights.splice(0).forEach(f => f.done && setTimeout(f.done, 0)); bursts = []; rings = []; } }
   };
 })();

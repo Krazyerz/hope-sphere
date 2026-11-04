@@ -3,53 +3,57 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="color-scheme" content="dark">
+<meta name="color-scheme" content="dark light">
 <title>hope-sphere</title>
+<script>try{var s=JSON.parse(localStorage.getItem("settings"))||{},th=s.theme||"system";if(th==="system")th=matchMedia("(prefers-color-scheme: light)").matches?"light":"dark";document.documentElement.dataset.theme=th;}catch(e){}</script>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<main>
+<a class="skip" href="#main" data-i18n="skip">Skip to content</a>
+<button class="gear" id="openSettings" data-i18n-label="settings" aria-label="Settings" aria-haspopup="dialog">&#9881;&#xFE0E;</button>
+
+<main id="main" tabindex="-1">
   <header>
     <canvas id="globe" aria-hidden="true"></canvas>
     <h1>hope-sphere</h1>
-    <p class="tag">Write a few kind words to someone you will never meet. Open a letter someone else sent.</p>
-    <p class="live" aria-live="off"><i></i><span><b id="liveN">128</b> letters in flight right now</span></p>
+    <p class="tag" data-i18n="tag">Write a few kind words to someone you will never meet. Open a letter someone else sent.</p>
+    <p class="live"><i></i><span><b id="liveN">128</b> <span data-i18n="live">letters in flight right now</span></span></p>
   </header>
 
-  <div class="tabs" role="tablist">
-    <button role="tab" id="tab-write" aria-selected="true" aria-controls="write">Write a letter</button>
-    <button role="tab" id="tab-read" aria-selected="false" aria-controls="read">Open a letter</button>
-    <button role="tab" id="tab-inbox" aria-selected="false" aria-controls="inbox">Inbox<span class="badge" id="badge" hidden>0</span></button>
+  <div class="tabs" id="tabs" role="tablist">
+    <button role="tab" id="tab-write" aria-selected="true" aria-controls="write" data-i18n="tab_write">Write a letter</button>
+    <button role="tab" id="tab-read" aria-selected="false" aria-controls="read" tabindex="-1" data-i18n="tab_read">Open a letter</button>
+    <button role="tab" id="tab-inbox" aria-selected="false" aria-controls="inbox" tabindex="-1"><span data-i18n="tab_inbox">Inbox</span><span class="badge" id="badge" hidden>0</span></button>
   </div>
 
   <section id="write" role="tabpanel" aria-labelledby="tab-write" class="card">
     <div class="grid">
-      <div><label for="name">Your name (optional)</label>
-        <input id="name" maxlength="30" placeholder="Anonymous" autocomplete="off"></div>
-      <div><label for="country">Your country</label>
-        <input id="country" list="countries" maxlength="56" placeholder="Start typing..." autocomplete="off"></div>
+      <div><label for="name" data-i18n="lbl_name">Your name (optional)</label>
+        <input id="name" maxlength="30" data-i18n-ph="ph_name" placeholder="Anonymous" autocomplete="off"></div>
+      <div><label for="country" data-i18n="lbl_country">Your country</label>
+        <input id="country" list="countries" maxlength="56" data-i18n-ph="ph_country" placeholder="Start typing..." autocomplete="off"></div>
     </div>
     <datalist id="countries"></datalist>
-    <label for="text">Your letter</label>
-    <textarea id="text" placeholder="Give people some hope..."></textarea>
+    <label for="text" data-i18n="lbl_text">Your letter</label>
+    <textarea id="text" data-i18n-ph="ph_text" placeholder="Give people some hope..."></textarea>
     <div class="tools">
-      <button type="button" class="btn sm alt" id="stuck">Stuck?</button>
+      <button type="button" class="btn sm alt" id="stuck" data-i18n="stuck">Stuck?</button>
       <div class="prompt" id="promptBox" hidden>
         <span id="promptText"></span>
-        <button type="button" class="link" id="usePrompt">Start with this</button>
+        <button type="button" class="link" id="usePrompt" data-i18n="use_prompt">Start with this</button>
       </div>
     </div>
-    <div class="tools"><span class="lab">Stamp color</span><div class="swatches" id="swatches"></div></div>
+    <div class="tools"><span class="lab" data-i18n="lbl_stamp">Stamp color</span><div class="swatches" id="swatches"></div></div>
     <div class="row">
-      <span class="count" id="count" aria-live="polite">0 / 80 words</span>
-      <button class="btn" id="send" disabled>Send</button>
+      <span class="count" id="count" aria-live="polite">0 / 80</span>
+      <button class="btn" id="send" disabled data-i18n="send">Send</button>
     </div>
     <div class="status" id="sendStatus" role="status" style="color:#8a5a1f"></div>
   </section>
 
   <section id="read" role="tabpanel" aria-labelledby="tab-read" hidden>
-    <div id="letterBox" class="card"><div class="empty">A letter is waiting for you somewhere.</div></div>
-    <div class="actions"><button class="btn" id="open">Open a letter</button></div>
+    <div id="letterBox" class="card"><div class="empty" data-i18n="empty_read">A letter is waiting for you somewhere.</div></div>
+    <div class="actions"><button class="btn" id="open" data-i18n="open">Open a letter</button></div>
   </section>
 
   <section id="inbox" role="tabpanel" aria-labelledby="tab-inbox" hidden>
@@ -57,13 +61,52 @@
     <div id="inboxLetter"></div>
   </section>
 
-  <small class="note">Offline mockup: letters are stored in this browser only.
-    <label class="demo"><input type="checkbox" id="demo" checked> Demo speed (mail arrives 15x faster)</label></small>
+  <small class="note"><span data-i18n="note">Offline mockup: letters are stored in this browser only.</span>
+    <label class="demo"><input type="checkbox" id="demo" checked> <span data-i18n="demo">Demo speed (mail arrives 15x faster)</span></label></small>
 </main>
 
+<dialog id="settings" aria-labelledby="setTitle">
+  <div class="sheet">
+    <div class="sheet-head"><h2 id="setTitle" data-i18n="settings">Settings</h2>
+      <button class="btn sm alt" id="closeSettings" data-i18n="close">Close</button></div>
+
+    <fieldset><legend data-i18n="sec_appearance">Appearance</legend>
+      <div class="field"><span class="fl" data-i18n="theme">Theme</span>
+        <div class="seg">
+          <label><input type="radio" name="theme" value="light" data-k="theme"><span data-i18n="theme_light">Light</span></label>
+          <label><input type="radio" name="theme" value="dark" data-k="theme"><span data-i18n="theme_dark">Dark</span></label>
+          <label><input type="radio" name="theme" value="system" data-k="theme"><span data-i18n="theme_system">System default</span></label>
+        </div></div>
+      <label class="opt"><input type="checkbox" data-k="globe"><span><b data-i18n="globe_anim">Globe animation</b></span></label>
+      <label class="opt"><input type="checkbox" data-k="reduceFx"><span><b data-i18n="reduce_fx">Reduce visual effects</b><small data-i18n="reduce_fx_d">Removes glow, stars and shadows.</small></span></label>
+    </fieldset>
+
+    <fieldset><legend data-i18n="sec_access">Accessibility</legend>
+      <div class="field"><span class="fl" data-i18n="font_size">Font size</span>
+        <div class="seg">
+          <label><input type="radio" name="fs" value="s" data-k="fs"><span data-i18n="fs_s">Small</span></label>
+          <label><input type="radio" name="fs" value="m" data-k="fs"><span data-i18n="fs_m">Medium</span></label>
+          <label><input type="radio" name="fs" value="l" data-k="fs"><span data-i18n="fs_l">Large</span></label>
+        </div></div>
+      <label class="opt"><input type="checkbox" data-k="dys"><span><b data-i18n="dyslexia">Dyslexia-friendly font</b><small data-i18n="dyslexia_d"></small></span></label>
+      <label class="opt"><input type="checkbox" data-k="hc"><span><b data-i18n="contrast">High contrast</b></span></label>
+      <label class="opt"><input type="checkbox" data-k="calm"><span><b data-i18n="reduce_anim">Reduce animations</b><small data-i18n="reduce_anim_d"></small></span></label>
+      <label class="opt"><input type="checkbox" data-k="keys"><span><b data-i18n="keys">Keyboard navigation support</b><small data-i18n="keys_d"></small></span></label>
+    </fieldset>
+
+    <fieldset><legend data-i18n="sec_lang">Language</legend>
+      <select data-k="lang" aria-label="Language"><option value="en">English</option><option value="ms">Bahasa Melayu</option></select>
+      <p class="hint" data-i18n="lang_more"></p>
+    </fieldset>
+    <button class="btn sm alt" id="resetSettings" data-i18n="reset">Reset to defaults</button>
+  </div>
+</dialog>
+
 <script src="geo.js" defer></script>
+<script src="i18n.js" defer></script>
 <script src="api.js" defer></script>
 <script src="globe.js" defer></script>
 <script src="ui.js" defer></script>
+<script src="settings.js" defer></script>
 </body>
 </html>
