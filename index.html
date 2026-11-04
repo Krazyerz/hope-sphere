@@ -13,11 +13,13 @@
     <canvas id="globe" aria-hidden="true"></canvas>
     <h1>hope-sphere</h1>
     <p class="tag">Write a few kind words to someone you will never meet. Open a letter someone else sent.</p>
+    <p class="live" aria-live="off"><i></i><span><b id="liveN">128</b> letters in flight right now</span></p>
   </header>
 
   <div class="tabs" role="tablist">
     <button role="tab" id="tab-write" aria-selected="true" aria-controls="write">Write a letter</button>
     <button role="tab" id="tab-read" aria-selected="false" aria-controls="read">Open a letter</button>
+    <button role="tab" id="tab-inbox" aria-selected="false" aria-controls="inbox">Inbox<span class="badge" id="badge" hidden>0</span></button>
   </div>
 
   <section id="write" role="tabpanel" aria-labelledby="tab-write" class="card">
@@ -30,6 +32,14 @@
     <datalist id="countries"></datalist>
     <label for="text">Your letter</label>
     <textarea id="text" placeholder="Give people some hope..."></textarea>
+    <div class="tools">
+      <button type="button" class="btn sm alt" id="stuck">Stuck?</button>
+      <div class="prompt" id="promptBox" hidden>
+        <span id="promptText"></span>
+        <button type="button" class="link" id="usePrompt">Start with this</button>
+      </div>
+    </div>
+    <div class="tools"><span class="lab">Stamp color</span><div class="swatches" id="swatches"></div></div>
     <div class="row">
       <span class="count" id="count" aria-live="polite">0 / 80 words</span>
       <button class="btn" id="send" disabled>Send</button>
@@ -42,9 +52,18 @@
     <div class="actions"><button class="btn" id="open">Open a letter</button></div>
   </section>
 
-  <small class="note">Offline mockup: letters are stored in this browser only.</small>
+  <section id="inbox" role="tabpanel" aria-labelledby="tab-inbox" hidden>
+    <ul class="mails" id="mails"></ul>
+    <div id="inboxLetter"></div>
+  </section>
+
+  <small class="note">Offline mockup: letters are stored in this browser only.
+    <label class="demo"><input type="checkbox" id="demo" checked> Demo speed (mail arrives 15x faster)</label></small>
 </main>
 
-<script src="script.js" defer></script>
+<script src="geo.js" defer></script>
+<script src="api.js" defer></script>
+<script src="globe.js" defer></script>
+<script src="ui.js" defer></script>
 </body>
 </html>

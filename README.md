@@ -2,7 +2,7 @@
 
 > Write a few kind words to someone you will never meet. Open a letter someone else sent.
 
-**Version:** v0.2 (offline mockup)
+**Version:** v1 phase 1 (offline mockup)
 
 hope-sphere is a small website where people send short, hopeful letters to random strangers around the world, and read letters written by strangers in return. This repo currently holds the **front-end mockup**. It runs fully offline, and all of the data access is isolated behind a tiny fake API so a real backend can be plugged in later.
 
@@ -20,11 +20,14 @@ hope-sphere is a small website where people send short, hopeful letters to rando
 hope-sphere/
 ├── index.html   page structure
 ├── style.css    all styling
-├── script.js    API layer, UI logic, globe animation
+├── geo.js       helpers, country coordinates, distance
+├── api.js       mock API: letters, slow mail, inbox, stamps, glow counts
+├── globe.js     canvas globe, flights, glowing dots
+├── ui.js        tabs, prompts, stamps, inbox, live counter
 └── README.md
 ```
 
-No build step and no dependencies. Keep the three files in the same folder.
+No build step and no dependencies. Keep all the files in the same folder.
 
 ## Run it
 
@@ -112,5 +115,6 @@ reads(letter_id, reader_token, read_at)    -- to avoid repeats and self-delivery
 
 ## Changelog
 
+- **v1 phase 1** Letters fly across the globe (sender to recipient), glowing dots for countries that have sent letters, live "in flight" counter, slow mail with an inbox (delay based on distance, demo-speed toggle), stamps and postmarks with a color picker, "Stuck?" writing prompts. `script.js` split into `geo.js`, `api.js`, `globe.js`, `ui.js`.
 - **v0.2** Cartoon-calm UI, country field with autocomplete, globe rendering fix (no more green leaking while rotating), HTML, CSS and JavaScript split into separate files.
 - **v0.1** First offline mockup with the write and read flow, 80-word limit and mock API layer.
